@@ -3,7 +3,7 @@
 Many ice shelves in Antarctic experience melt across their surface during the austral summer each year, but many scientific questions remain.
 One set of key questions concerns the variability of melt, both in time and space - when does melt occur, where does it occur, and how much do these vary between years?
 
-As part of my PhD with the [Monash Ice Sheet Initiative](icesheet.org) at [Monash University](https://www.monash.edu/science/schools/earth-atmosphere-environment/our-people), I am working on answers to these questions and others using satellite observations of surface melt.
+As part of my PhD with the [Monash Ice Sheet Initiative](https://www.icesheet.org/) at [Monash University](https://www.monash.edu/science/schools/earth-atmosphere-environment/our-people), I am working on answers to these questions and others using satellite observations of surface melt.
 The scripts in this repository have been developed in the first stage of my PhD and used in my analysis of melt on the Shackleton Ice Shelf in East Antarctica.
 The scripts can be used to recreate the figures in the manuscript (doi & link to come!), and are also easily applied to other ice shelves (see "Beyond Shackleton").
 
