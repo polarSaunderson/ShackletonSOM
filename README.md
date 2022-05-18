@@ -11,9 +11,9 @@ Please read the License for information about using these scripts, and reference
 ### General Overview of the Repository
 This project was written in R using RStudio.
 It uses the renv package to help with portability / replicability.
-Using _renv_ should be easy enough - after getting the repository on your system, launch the R Project, and renv will update itself. 
+Using _renv_ should be easy enough - after getting the repository on your system, launch the R Project, and run renv::init(). 
 You can then use renv::restore() to recreate the environment; this will most likely need to download packages / updates.
-See [here](https://rstudio.github.io/renv/articles/renv.html#collaborating) and [here](https://rstudio.github.io/renv/articles/collaborating.html) for info about renv.
+See [here](https://rstudio.github.io/renv/articles/renv.html#collaborating), [here](https://rpubs.com/glennwithtwons/reproducible-r-toolbox), and [here](https://rstudio.github.io/renv/articles/collaborating.html) for info about renv.
 
 #### Scripts & File Names
 Scripts for processing and wrangling __data__ begin with __dt__, and are saved in _Data/Scripts/_.\
