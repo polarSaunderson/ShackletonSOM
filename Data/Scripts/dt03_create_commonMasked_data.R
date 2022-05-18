@@ -185,8 +185,8 @@ for (ii in 1:length(u_sensors)) {
     for (jj in (1:ee$ii_sensorDays)) {                                             
       # Reform daily list of melting pixel IDs as a grid
       ee$meltGrid <- idList2meltGrid(ee$ii_meltLists[[ii]], 
-                                        ee$ii_shelfIds[[ii]], 
-                                        jj)
+                                     ee$ii_shelfIds[[ii]], 
+                                     jj)
       
       # Mask out pixels beyond the commonMask
       ee$meltGrid[as.matrix(ee$commonMask) == 0] <- NA
@@ -234,21 +234,22 @@ ee$subFolder <- createSubFolders(ff$interimPath,
                                     paste(ff$versionInfo,"commonMask", sep = "_"))
 
 # File path & name
-ff$fileNaming <- paste0(ee$subFolder, "/", ff$versionInfo, "_commonMask")
+ee$fileNaming <- paste0(ee$subFolder, "/", ff$versionInfo, "_commonMask")
 
 # Save
 save(meltListResampled, envir = ee, 
-     file = paste0(ff$fileNaming, "_meltList.rData"))
+     file = paste0(ee$fileNaming, "_meltList.rData"))
 save(commonMask,  envir = ee, 
-     file = paste0(ff$fileNaming, "_commonMask.rData"))
+     file = paste0(ee$fileNaming, "_commonMask.rData"))
 save(commonAreas, envir = ee, 
-     file = paste0(ff$fileNaming, "_commonAreas.rData"))
+     file = paste0(ee$fileNaming, "_commonAreas.rData"))
 save(commonIds,   envir = ee, 
-     file = paste0(ff$fileNaming, "_commonRaster.rData"))
+     file = paste0(ee$fileNaming, "_commonRaster.rData"))
 
-# Upon Completion
-cat("\n Script sc03 complete for", ff$versionInfo, "\n\n")
+# Finished
+rm(ii, iiSensor, jj)
 ee$runningTime <- proc.time() - ee$startTime
 print(ee$runningTime)
+printLine()
+cat("\n Script sc03 complete for", ff$versionInfo, "\n\n")
 beep("ping") 
-rm(ii, iiSensor, jj)
