@@ -13,10 +13,10 @@
 #             such as: melt extent, context, change in extent, date.
 #           - Also creates CMS along the way, which stores the Cumulative 
 #             Melting Surface for each sensor for each summer
-#           - This script isn't too quick if including SSMIS data (~ 40-60 seconds)
+#           - This script takes ~ 40-60 seconds if including SSMIS data
 #
 # Updates:
-# 2022/05/09  v1.0  Created a tidier version of the script
+# 2022/05/19  v1.0  Created a tidier version of the script to share
 #
 
 # User Options #################################################################

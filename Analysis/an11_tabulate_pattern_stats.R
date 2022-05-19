@@ -5,16 +5,16 @@
 # SCRIPT OVERVIEW ##############################################################
 # Author:     Dominic Saunderson      [ dominicSaunderson@gmail.com ]
 #
-# Purpose:    Calculate the statistics for Table 1 for each pattern
+# Purpose:    Calculate the statistics for each pattern (Table 1)
 #
 # Comments: - This script outputs different statistics to the console
 #           ! The Racmo2.3p3 temperature correlation requires the correct data
 #             from dt07:
 #             - Run dt07 with u_variable as t2m and u_meanRaser as FALSE
-#             - The manuscript uses DJ as the summer definition for correlation
+#             - The manuscript uses DJ as the summer definition for correlations
 #
 # Updates:
-# 2022/05/09  v1.0  Created a tidier version of the script
+# 2022/05/19  v1.0  Created a tidier version of the script to share
 #
 
 # User Options #################################################################
@@ -105,10 +105,9 @@ for (ii in 1:9) {
 
 # What type?
 ee$data <- ee$annualSom
-# ee$data <- ee$propSom
 
 ## Calculate Median Annual Occurrence ------------------------------------------
-cat("\nTrend Significance \n\n")
+cat("Trend Significance \n\n")
 for (ii in 1:9) {
   ee$tableData[ii, 4] <- median(ee$data[ii, ], na.rm = TRUE) %>% round(1)
   ee$tableData[ii, 5] <- mad(ee$data[ii, ], na.rm = TRUE, constant = 1) %>% round(1)
@@ -125,7 +124,8 @@ for (ii in 1:9) {
 }
 
 ## Correlate with annual CMS ---------------------------------------------------
-cat("\nCMS Correlations \n\n")
+printLine()
+cat("CMS Correlations \n\n")
 # Calculate for each pattern
 for (ii in 1:9) {
   # Correlate
@@ -143,7 +143,8 @@ for (ii in 1:9) {
 }
 
 ## Inter Pattern Correlations (not in table) -----------------------------------
-cat("\n Interpattern Correlations (p < 0.1) \n\n")
+printLine()
+cat("Interpattern Correlations (p < 0.1) \n\n")
 
 # Preallocate
 ee$interee$kaw <- matrix(NA, nrow = 9, ncol = 9)
@@ -172,7 +173,8 @@ for (ii in 1:9) {
 }
 
 ## RACMO temperature correlations ----------------------------------------------
-cat("\n RACMO2.3p3 DJ Correlations \n\n")
+printLine()
+cat("RACMO2.3p3 DJ Correlations \n\n")
 
 # Load the data
 ee$racmoT2m <- terra::rast(paste0(paste("Data", 
@@ -233,12 +235,12 @@ ee$pp[, 8] <- ee$pp[, 6] / ee$pp[, 3]
 
 # Display
 printLine()
-cat("\n Extremes \n\n")
+cat("Extremes \n\n")
 print(ee$pp %>% round(2)) # round for ease of reading, not 1.0000000000!
 
 # Output table data at the end! ------------------------------------------------
 printLine()
-cat("\n Table Data \n\n")
+cat(" Table Data \n\n")
 print(ee$tableData)
 
 # Finished

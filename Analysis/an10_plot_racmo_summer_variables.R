@@ -8,16 +8,16 @@
 # Purpose:    Plot average cumulative summer racmo values (Fig. 7)
 #
 # Comments: - Plots the average cumulative summer values
-#           ! Make sure you run script dt07 first:
+#           ! Make sure you run script dt07 first, which preps the data:
 #             - Run dt07 separately for each variable listed here in u_variable
 #             - Ensure u_summerMonths matches the geotiffs dates
 #             - u_meanRaster should be TRUE in dt07 for this data
-#           - RACMO2.3p3 data is from van Dalum et al. (2021; 2022); see dt07
-#           - The colour bars are set up for the manuscript:
+#           - RACMO2.3p3 data comes from van Dalum et al. (2021; 2022); see dt07
+#           - The colour bars - z-limits are set up for the manuscript:
 #             - They may not be appropriate for other shelves / time periods
 #
 # Updates:
-# 2022/05/09  v1.0  Created a tidier version of the script
+# 2022/05/19  v1.0  Created a tidier version of the script to share
 #
 
 # User Options #################################################################

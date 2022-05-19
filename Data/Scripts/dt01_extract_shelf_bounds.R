@@ -8,12 +8,14 @@
 # Purpose:    Extract, reproject and save the MEaSURES shelf boundary for the
 #             selected shelf
 #
-# Comments: - Use the proper name from MEaSURES for the shelf; using an 
-#             incorrect name will print a list of legitimate shelves to the 
-#             console
+# Comments: - The shelf outline is necessary in many of the other scripts so we
+#             isolate and prepare it first
+#           - Use the proper name from MEaSURES for the shelf; using an 
+#             incorrect name will print a list of legitimate shelves that can be
+#             used to the console
 #
 # Updates:
-# 2022/05/09  v1.0  Created a tidier version of the script
+# 2022/05/19  v1.0  Created a tidier version of the script to share
 #
 
 # User Options #################################################################

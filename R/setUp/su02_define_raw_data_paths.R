@@ -17,7 +17,8 @@
 #                     https://nsidc.org/data/nsidc-0709 
 #
 # Updates:
-# 2022/05/09  v1.0  Created a tidier version of the script
+# 2022/05/19  v1.0  Created a tidier version of the script to share
+#
 
 # SET FILE PATHS ###############################################################
 # Create an environment just for file / folder paths

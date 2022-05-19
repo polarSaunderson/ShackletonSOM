@@ -8,13 +8,13 @@
 # Purpose:    Plot the mean metric values for each pixel and RACMO flux (Fig. 6)
 #
 # Comments: - Creates maps of the mean metric values for each pixel over the 
-#             full data period studied
-#           ! Make sure that the dt05 script has been run
+#             full data period
+#           ! Make sure that the dt05 script has been run before using this
 #           ! If you don't have the RACMO data from script dt07, the code here 
 #             will plot the melt metrics first and then fail
 #
 # Updates:
-# 2022/05/09  v1.0  Created a tidier version of the script
+# 2022/05/19  v1.0  Created a tidier version of the script to share
 #
 
 # User Options #################################################################

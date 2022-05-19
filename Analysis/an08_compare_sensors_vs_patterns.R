@@ -6,7 +6,7 @@
 # Author:     Dominic Saunderson      [ dominicSaunderson@gmail.com ]
 #
 # Purpose:    Compare the AMSR and SSMIS melt observations on a day, and also 
-#             compare against their assigned SOM patterns (Fig. S )
+#             compare against their assigned SOM patterns (Fig. S)
 #
 # Comments: - Plots the observations and assigned patterns from each sensor 
 #             side-by-side to allow visual comparison
@@ -14,7 +14,7 @@
 #           - Errors likely mean that the combination doesn't exist
 #
 # Updates:
-# 2022/05/09  v1.0  Created a tidier version of the script
+# 2022/05/19  v1.0  Created a tidier version of the script to share
 #
 
 # User Options #################################################################

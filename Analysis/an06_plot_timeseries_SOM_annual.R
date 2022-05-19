@@ -5,7 +5,7 @@
 # SCRIPT OVERVIEW ##############################################################
 # Author:     Dominic Saunderson      [ dominicSaunderson@gmail.com ]
 #
-# Purpose:    Plot separate timeseries of annual SOM pattern occurrence (Fig. 5)
+# Purpose:    Plot timeseries of annual SOM pattern occurrence (Fig. 5)
 #
 # Comments: - Also creates barplots of relative pattern occurrence each summer
 #             (Fig. S9)
@@ -15,7 +15,7 @@
 #           ! Make sure you have run script an01 already
 #
 # Updates:
-# 2022/05/09  v1.0  Created a tidier version of the script
+# 2022/05/19  v1.0  Created a tidier version of the script to share
 #
 
 # User Options #################################################################

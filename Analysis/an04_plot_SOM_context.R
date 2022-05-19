@@ -12,12 +12,12 @@
 #             - Context refers to how far through a melt season an observation 
 #               occurs, given as a percentage of the full season length in days
 #           - There are a few options for u_xAxis: 
-#             - Plot all patterns at once, as in the manuscript, or
+#             - Plot all patterns at once (as in the manuscript), or
 #             - Plot each pattern separately ("eachCon" or "eachDate")
 #           ! Make sure you have run script an01 already
 #
 # Updates:
-# 2022/05/09  v1.0  Created a tidier version of the script
+# 2022/05/19  v1.0  Created a tidier version of the script to share
 #
 
 # User Options #################################################################

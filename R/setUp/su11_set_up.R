@@ -8,11 +8,14 @@
 # Purpose:    Prepares for the analysis scripts
 #
 # Comments: - You shouldn't need to do anything here
-#           - But you can overwrite user settings (u_variable) instead of having
+#           - This is called in the analysis scripts, but not the data scripts
+#           ! But you can overwrite user settings (u_variable) instead of having
 #             to change them individually in each script
+#             - u_variables declared here will overwrite any in su01
 #
 # Updates:
-# 2022/05/09  v1.0  Created a tidier version of the script
+# 2022/05/19  v1.0  Created a tidier version of the script to share
+#
 
 # RUN SET UP SCRIPTS ###########################################################
 source("R/setUp/su01_set_up.R")

@@ -28,7 +28,7 @@
 #                     https://zenodo.org/record/5512077#.Ylz4t-hBxhF
 #
 # Updates:
-# 2022/05/09  v1.0  Created a tidier version of the script
+# 2022/05/19  v1.0  Created a tidier version of the script to share
 #
 
 # User Options #################################################################

@@ -7,33 +7,37 @@
 #
 # Purpose:    Create a list of ID numbers indicating which pixels melt each day
 #
-# Comments: - This script turns the "raw" binary melt data into usable data for 
-#             the forthcoming scripts. 
-#           - The code here is a very long way around, and much easier plus more 
-#             efficient ways are definitely possible. However, it works.
-#           - It can be run for any shelf, providing script dt01 has been run 
+# Comments: - This script turns the "raw" (binary) melt data into usable data 
+#             for the following scripts. 
+#           - The code here is very verbose and a long way around - much easier,
+#             and more efficient ways are definitely possible, but this works.
+#           - Run this script for any shelf, providing script dt01 has been run 
 #             for it; also make sure that the data has been downloaded and that 
-#             the correct path is set in su01_define_raw_data_paths.R
+#             the correct path is set in the su02 script
 #           - As a quick overview, this script:
-#             - 1) Creates ID numbers for the whole Antarctic region
+#             - 1) Creates ID numbers for the whole Antarctic region:
 #                   - Each pixel in the dataset has a corresponding ID number. 
 #                   - The ID numbers are created here & have no wider use
 #                   - ID numbers count from the top-left (~ Chile) to the 
 #                     top-right, then ascend row-by-row, finishing in the
 #                     bottom-right (~ Wilkes).
-#             - 2) Extracts raw (binary) melt data for the selected shelf
+#             - 2) Extracts raw (binary) melt data for the selected shelf:
 #                   - Identifies the ID numbers of melting pixels for each day 
 #                   - Each day's melting pixels are stored in a separate list
 #           - Also stored are additional supplementary datasets:
 #                 pixel latitude matrix     || pixel longitude matrix
 #                 shelf pixel ID matrix     || pixel shelf area matrix
 #                 binary shelf mask matrix  || shelf region raster
-#           - Running time for this script is very inconsistent; it ranges from
-#             seconds up to 1-2 minutes for AMSR-E or AMSR-2, and 4-5 minutes 
-#             for SSMIS for the Shackleton 
+#           - Running time for this script is very inconsistent:
+#             - Normally it has taken 1-2 minutes for AMSR-E or AMSR-2, and 4-5 
+#               minutes for the longer SSMIS dataset
+#             - Sometimes it only takes seconds for each
+#           - u_sensors allows all three sensors to be looped through, but often
+#             R can crash when trying this; it may be better to run it 
+#             individually for each sensor instead
 #
 # Updates:
-# 2022/05/09  v1.0  Created a tidier version of the script
+# 2022/05/19  v1.0  Created a tidier version of the script to share
 #
 
 # User Options #################################################################

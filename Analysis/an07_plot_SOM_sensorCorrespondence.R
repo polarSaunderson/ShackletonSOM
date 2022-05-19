@@ -12,8 +12,8 @@
 #             then plots how well the SOM pattern is seen by both sensors on the 
 #             same day
 #           ! Make sure that data for AMSR and SSMIS exists:
-#             - Run the dt01-dt06 scripts with "amsre", "amsr2" & "ssmis" in 
-#               their u_sensors options
+#             - Run the dt01-dt06 scripts, with u_sensors including "amsre", 
+#               "amsr2" & "ssmis"
 #           ! Make sure that the AMSR data has been run through script an01
 #           ! The coding approach used here only works as it is because SSMIS 
 #             never observes melt when AMSR doesn't; this may not always be the 
@@ -23,10 +23,10 @@
 #             Data/version/interim/version_som):
 #             - That data is used in script an08
 #           - This has only been tested with a 3 x 3 som output configuration,
-#             so be careful with others - they may not align sensors correctly
+#             so be careful with others - the plot may not align correctly
 #
 # Updates:
-# 2022/05/09  v1.0  Created a tidier version of the script
+# 2022/05/19  v1.0  Created a tidier version of the script to share
 #
 
 # User Options #################################################################

@@ -7,14 +7,14 @@
 #
 # Purpose:    Create a common mask for the AMSR and resampled SSMIS datasets
 #
-# Comments: - The AMSR and SSMIS are different resolutions; this resamples the 
-#             SSMIS data to the AMSR resolution and crops the datasets together
+# Comments: - The AMSR and SSMIS are different resolutions; here we resample the 
+#             SSMIS data to the AMSR resolution and crop the datasets together
 #           - This script is still necessary even if only using the AMSR data, 
-#             because it prepares the data & creates the correct names / paths;
-#             it only takes seconds to run if just using AMSR data
-#           - There are likely much quicker ways of doing this overall - now, it 
-#             takes around 4 minutes to resample all of the SSMIS data (for all 
-#             years); with just AMSR data, it is only seconds
+#             because it prepares the data & creates the correct names / paths:
+#             - It takes only a few seconds to run if using only AMSR data
+#             - There are likely much quicker ways of doing this overall - now,
+#               it takes around 4 minutes to resample all of the SSMIS data (for 
+#               all years)
 #           - Alternative masks could be included in ee$resampledRasters, or 
 #             just created as a new raster in ee$commonMask. However, be aware 
 #             that the data was already clipped to the shelf in script dt02
@@ -22,7 +22,7 @@
 #             sensors you are trying to include!   
 #
 # Updates:
-# 2022/05/09  v1.0  Created a tidier version of the script
+# 2022/05/19  v1.0  Created a tidier version of the script to share
 #
 
 # User Options #################################################################

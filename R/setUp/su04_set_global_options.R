@@ -10,7 +10,8 @@
 # Comments: - You shouldn't need to do anything here
 #
 # Updates:
-# 2022/05/09  v1.0  Created a tidier version of the script
+# 2022/05/19  v1.0  Created a tidier version of the script to share
+#
 
 # SET GLOBAL OPTIONS ###########################################################
 # Create an environment for global options

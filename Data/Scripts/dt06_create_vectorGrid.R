@@ -9,13 +9,14 @@
 #             input to the SOM functions in later scripts
 #
 # Comments: - A very simple rearrangement that prepares the data for SOM input
-#             - Creating it here keeps this separate 
+#             - Creating it here keeps this code separate 
 #             - It also eases / speeds up sensitivity testing
 #           - In the vectorGrid, each row is a day, and each column a specific 
 #             pixel of the mapped shelf
+#           - It takes ~10-15 seconds to run through
 #
 # Updates:
-# 2022/05/09  v1.0  Created a tidier version of the script
+# 2022/05/19  v1.0  Created a tidier version of the script to share
 #
 
 # User Options #################################################################
@@ -89,5 +90,7 @@ for (ii in 1:length(u_sensors)) {
 # Finished
 rm(ii, jj)
 printLine()
+ee$runningTime <- proc.time() - ee$startTime
+print(ee$runningTime)
 cat("\n Script dt06 complete for", ff$versionInfo, "\n\n")
 beep("ping")
