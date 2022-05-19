@@ -7,6 +7,7 @@ The scripts here are shared in the interests of transparency and open science, a
 Future work can also build on this work to explore melt on other Antarctic ice shelves (see "Beyond Shackleton" below).
 
 Please read the License for information about using these scripts, and reference the TCD paper if you use them in your own work.
+Let me know if you have any questions!
 
 ### General Overview of the Repository
 This project was written in R using RStudio.
@@ -22,23 +23,23 @@ These scripts are not necessary for recreating the manuscripts figures because t
 However, these scripts need to be run if investigating other shelves; the necessary raw data for such investigations will be published online upon final acceptance of the manuscript.
 
 Scripts for __analysing__ the data begin with __an__, and are found in _Analysis/_.\
-These are numbered to ease cross-referencing, but don't necessarily need to be run in the same order, as long as _an01_ has been run first; any other prerequisite scripts are noted at the top of a script.
+These scripts recreate the figures (see below) and are numbered to ease cross-referencing, but don't necessarily need to be run in the same order, as long as _an01_ has been run first; any other prerequisite scripts are noted at the top of a script.
 
 Scripts necessary for __setting up__ other scripts begin with __su__. 
-These scripts usually set global options and file paths etc., and are called by the _an_ and _dt_ scripts. 
+These scripts usually set global options and file paths etc., and are called by the __an__ and __dt__ scripts. 
 All __su__ scripts are found in _R/setUp/_, and should only need to be accessed once when first working within the project.
-Most importantly, you will need to set the file paths to raw data in __su02__ if you want to explore beyond the included data (see "Beyond Shackleton").
+Most importantly, you will need to set the file paths to raw data in _su02_ if you want to explore beyond the included data (see "Beyond Shackleton").
 
-When scripts are running, everything is stored in environments: \
-  - dd is for Data produced in previous scripts \
-  - ee is the Environment for the current script \
-  - ff is for File and Folder paths and names \
-  - gg is for Global options that are referenced often \
+When scripts are running, everything is stored in environments: 
+  - dd is for Data produced in previous scripts 
+  - ee is the Environment for the current script
+  - ff is for File and Folder paths and names 
+  - gg is for Global options that are referenced often
 
 Files beginning with __hp__ can be found in the repository, and are __helper__ files used to explain the repository.
 
 #### User Options
-At the top of each script, following an overview of the script, there are user options, which are variables like this: __u_variable__.
+At the top of each script, following an overview of the script, there are user options, which are variables like this: __u_variable__.\
 User options can also be overwritten in _su01_ or _su11_ rather than re-writing common ones in each script if necessary.
 
 #### Functions
@@ -60,8 +61,8 @@ However, the scripts are designed to be flexible enough to explore melt on any s
 The data necessary for this will be published online upon final acceptance of the manuscript.
 
 It should be noted that the scripts have predominantly been used with the settings necessary for the paper.
-Whilst they have been tested and should still work for other settings, occasional problems may be run into, and it is inevitable that some figures / plots will become awkward and potentially lose some legibility.\
-The scripts can also be noticeably slower for bigger shelves.\
+Whilst they have been tested and should still work for other settings, occasional problems may be run into, and it is inevitable that some figures / plots will become awkward and potentially lose some of their legibility in the axes for example.\
+The scripts can also be noticeably slower for bigger shelves.
 
 If you have any questions, I will try my best to help! Just let me know :)
 

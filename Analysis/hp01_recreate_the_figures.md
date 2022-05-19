@@ -11,7 +11,7 @@ Fig. 4:       an05_plot_SOM_progressions.R \
 Fig. 5:       an06_plot_timeseries_SOM_annual.R \
 Fig. 6:       an09_map_mean_perPixel_metrics.R \
 Fig. 7:       an10_plot_racmo_summer_variables.R \
-Fig. 8:       an07_plot_SOM_sensor_correspondence.R \
+Fig. 8:       an07_plot_SOM_sensor_correspondence.R
 
 __Supplement__ \
 Figures in the supplement may need options adjusting at the top of the respective script.
@@ -24,4 +24,4 @@ Fig. S5:      an01_model_SOM_melt_patterns.R (set u_somCol & u_somRow as 10) \
 Fig. S6:      an04_plot_SOM_context.R (set u_xAxis as "dates") \
 Fig. S7:      an12_plot_annual_melt_extent.R (set u_summer as 2018) \
 Fig. S8:      an06_plot_timeseries_SOM_annual.R \
-Fig. S9:      an08_compare_sensors_vs_patterns.R \
+Fig. S9:      an08_compare_sensors_vs_patterns.R
