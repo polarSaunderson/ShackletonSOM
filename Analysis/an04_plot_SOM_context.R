@@ -17,6 +17,7 @@
 #           ! Make sure you have run script an01 already
 #
 # Updates:
+# 2022/08/30  v1.1  Added code for hatching
 # 2022/05/19  v1.0  Created a tidier version of the script to share
 #
 
@@ -152,6 +153,35 @@ ee$xAxisPlot <- barplot(ee$somXdata,
                         ylab = "",
                         axisnames = FALSE,
                         axes = FALSE)
+# Add hatching
+gg$hatchDensity <- c(0, 0, 10, 0, 0,  20, 10, 0, 0)
+gg$hatchAngles  <- c(0, 0, 45, 0, 0, -45, 45, 0, 0)
+gg$kulaH        <- rep("#767676", 9)
+gg$kulaH[7]     <- "#ffffff"
+
+barplot(ee$somXdata,
+        ylim      = c(0, 100),
+        ylab      = "",
+        col       = gg$kulaH,
+        angle     = gg$hatchAngles,
+        axisnames = FALSE,
+        density   = gg$hatchDensity,
+        add       = TRUE,
+        axes      = FALSE)
+
+# Hide extra column bottoms - very hacky!
+# Using density in above barplotting, shows the x-axis marks for the extra cols
+# we used in ee$somXdata to give space for the colour scalebar.
+par(xpd = TRUE)
+if (u_xAxis == "dates") {
+  ee$shifting <- 29
+} else {
+  ee$shifting <- 24.15
+}
+polygon(x = c(0, 3, 3, 0, 0) + ee$shifting,
+        y = c(0, 0, 2, 2, 0) - 1, 
+        col = "white", border = NA)
+par(xpd = FALSE)
 
 # Add y-axis label text
 mtext("Overall Occurrence (%)", 
@@ -219,7 +249,9 @@ par(xpd = FALSE)
 addColourBar(ee$kulaT[c(1:(u_somCol * u_somRow))],
              zlim = c(1, u_somCol * u_somRow),
              type = "Q",
-             # title = "SOM Pattern",
+             hatchColour = gg$kulaH,
+             hatchDensity = gg$hatchDensity,
+             hatchAngle = gg$hatchAngles,
              allLabels = "yes",
              mar = c(8, 2.7, 8, 0.3), 
              cex.labels = 2.25)
