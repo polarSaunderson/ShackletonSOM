@@ -17,6 +17,7 @@
 #             - They may not be appropriate for other shelves / time periods
 #
 # Updates:
+# 2022/08/30  v1.1  Added a wind subplot; rearranged to accommodate 10 subplots
 # 2022/05/19  v1.0  Created a tidier version of the script to share
 #
 
@@ -37,10 +38,11 @@ u_variable <- c("snowmelt",
                 "t2m",
                 "albedo", 
                 "precip", 
-                "senf",
-                "swsd", 
+                "w10m",
                 "subl",
+                "senf",
                 "latf",
+                "swsd", 
                 "lwsd")
 
 # Set-Up #######################################################################
@@ -48,24 +50,23 @@ source("R/setUp/su11_set_up.R") # Global variables, filepaths, functions, etc.
 
 # Create a pop-out window
 dev.new(width  = 12,
-        height = 12,
+        height = 10,
         unit   = "cm",
         noRStudioGD = TRUE)
 
 # Prep the layout order
-layout(matrix(c(1, 3, 5, 
-                1, 3, 5,
-                2, 4, 6,
-                7, 9, 11,
-                7, 9, 11,
-                8, 10, 12,
-                13, 15, 17, 
-                13, 15, 17, 
-                14, 16, 18), 
-              byrow = TRUE, ncol = 3))
+layout(matrix(c(1,  3,  5,  7,  9,
+                1,  3,  5,  7,  9,
+                1,  3,  5,  7,  9,
+                2,  4,  6,  8, 10,
+                11, 13, 15, 17, 19,
+                11, 13, 15, 17, 19,
+                11, 13, 15, 17, 19,
+                12, 14, 16, 18, 20), byrow = TRUE, nrow = 8))
 
 # We need to often reset the margins after plotting colour bars
-ee$resetMar <- c(0,0,0,0)
+ee$colourBarMar <- c(3, 2, 2.5, 2)
+ee$resetMar     <- c(0, 0.5, 0, 0.5)
 par(mar = ee$resetMar)
 
 # How many months are in the data? This allows rudimentary scaling of z-limits
@@ -84,6 +85,7 @@ for (ii in u_variable) {
                     subl     = c(-20, 0) * ee$monthCount,
                     t2m      = c(268.5, 271.5),
                     albedo   = c(0.46, 0.86),
+                    w10m     = c(0, 10),
                     # remember: fluxes are in millions
                     swsd     = c(800, 1000) * ee$monthCount,
                     lwsd     = c(550, 750) * ee$monthCount,
@@ -98,6 +100,7 @@ for (ii in u_variable) {
                     subl     = c(-20, -5) * ee$monthCount,
                     t2m      = c(268.5, 271.5),
                     albedo   = c(0.78, 0.88),
+                    w10m     = c(5, 13),
                     # remember: fluxes are in millions
                     swsd     = c(725, 1025) * ee$monthCount,
                     lwsd     = c(575, 725) * ee$monthCount,
@@ -111,6 +114,7 @@ for (ii in u_variable) {
                      precip   = bquote("Precipitation (kg"~ m^2~ ")"),
                      subl     = bquote("Sublimation (kg"~ m^2~ ")"),
                      t2m      = bquote("Temperature (K)"),
+                     w10m     = bquote("Wind Speed (m"~ s^-1~ ")"),
                      albedo   = "Albedo",
                      swsd     = bquote(~SW ["IN"] ~ "(x" ~ 10^6 ~"J"~ m^2~ ")"),
                      lwsd     = bquote(~LW ["IN"] ~ "(x" ~ 10^6 ~"J"~ m^2~ ")"),
@@ -126,6 +130,7 @@ for (ii in u_variable) {
                        subl     = "above",
                        t2m      = "both",
                        albedo   = "below",
+                       w10m     = "both",
                        swsd     = "below",
                        lwsd     = "neither",
                        senf     = "neither",
@@ -139,6 +144,7 @@ for (ii in u_variable) {
                      subl     = colour("acton")(11),
                      t2m      = colour("nuuk")(14),
                      albedo   = colour("tokyo")(15)[-c(1, 2, 14, 15)], # 11
+                     w10m     = colour("imola")(12)[c(11:2)],
                      swsd     = colour("lajolla")(16)[-c(1:2, 14:16)],
                      lwsd     = colour("lajolla")(16)[-c(1:3, 14:16)],
                      senf     = colour("BuRd")(18)[-c(1, 8, 9, 10, 11, 18)],
@@ -160,21 +166,46 @@ for (ii in u_variable) {
   }
   
   ## Get the data --------------------------------------------------------------
-  # Read in the data from file
-  ee$racmoFile <- paste0(paste("Data", ff$versionInfo, "racmo/", sep = "/"),
-                         paste("racmo2", 
-                               u_summerMonths[1], last(u_summerMonths), 
-                               ii, 
-                               sep = "_"), ".tif")
-  ee$racmo <- terra::rast(ee$racmoFile)
-  
-  # terra struggles with the crs, so add it explicitly
-  crs(ee$racmo) <- paste("+proj=ob_tran +o_proj=longlat +o_lat_p=-180.0", 
-                         "+lon_0=10.0 -m 57.295779506")
-  
-  # We need the average value if using albedo or temperature
-  if (ii %in% c("albedo", "t2m")) {
-    ee$racmo <- ee$racmo / ee$monthCount
+  if (ii != "w10m") {
+    # Read in the data from file
+    ee$racmoFile <- paste0(paste("Data", ff$versionInfo, "racmo/", sep = "/"),
+                           paste("racmo2", 
+                                 u_summerMonths[1], last(u_summerMonths), 
+                                 ii, 
+                                 sep = "_"), ".tif")
+    ee$racmo <- terra::rast(ee$racmoFile)
+    
+    # terra struggles with the crs, so add it explicitly
+    crs(ee$racmo) <- paste("+proj=ob_tran +o_proj=longlat +o_lat_p=-180.0", 
+                           "+lon_0=10.0 -m 57.295779506")
+    
+    # We need the average value if using albedo or temperature
+    if (ii %in% c("albedo", "t2m")) {
+      ee$racmo <- ee$racmo / ee$monthCount
+    }
+  } else {
+    # Read in the v10m speed data from file
+    ee$racmoFileV <- paste0(paste("Data", ff$versionInfo, "racmo/", sep = "/"),
+                            paste("racmo2", 
+                                  u_summerMonths[1], last(u_summerMonths), 
+                                  "v10m", 
+                                  sep = "_"), ".tif")
+    ee$racmoV <- terra::rast(ee$racmoFileV)
+    
+    # Read in the u10m speed data from file
+    ee$racmoFileU <- paste0(paste("Data", ff$versionInfo, "racmo/", sep = "/"),
+                            paste("racmo2", 
+                                  u_summerMonths[1], last(u_summerMonths), 
+                                  "u10m", 
+                                  sep = "_"), ".tif")
+    ee$racmoU <- terra::rast(ee$racmoFileU)
+    
+    # Calculate the wind magnitude
+    ee$racmo <- sqrt(ee$racmoU^2 + ee$racmoV^2)
+    
+    # terra struggles with the crs, so add it explicitly
+    crs(ee$racmo) <- paste("+proj=ob_tran +o_proj=longlat +o_lat_p=-180.0", 
+                           "+lon_0=10.0 -m 57.295779506")
   }
   
   ## Plot the data! ------------------------------------------------------------
@@ -182,16 +213,16 @@ for (ii in u_variable) {
   ee$plotTrick <- ee$racmo
   ee$plotTrick[ee$plotTrick < ee$zLim[1]] <- 1
   ee$plotTrick[ee$plotTrick > ee$zLim[2]] <- 2
-  terra::plot(ee$plotTrick, 
-              range = c(1, 2), 
+  terra::plot(ee$plotTrick,
+              range = c(1, 2),
               col   = ee$kulaE,
               axes  = FALSE, legend = FALSE,
               mar   = ee$resetMar)
   
-  # Display racmo pixel values ( mean summer totals, except albedo & t2m )
+  # Display racmo pixel values ( mean summer totals, except albedo, wind & t2m )
   terra::plot(ee$racmo,
               add = TRUE,
-              range = ee$zLim, 
+              range = ee$zLim,
               col   = ee$kulaS,
               axes  = FALSE, legend = FALSE)
   
@@ -199,30 +230,42 @@ for (ii in u_variable) {
   ee$shelves <- terra::vect(ff$rawShelf)
   ee$shelf   <- ee$shelves[ee$shelves$NAME == u_shelf]
   ee$shelf   <- terra::project(ee$shelf, ee$racmo)
-  lines(ee$shelf, lwd = 1.1)
+  lines(ee$shelf, lwd = 1.1, col = "black")
   
   # Mappify
-  addNorthArrow(raster(ee$racmo), 
-                lwd = 1.1, 
-                endLength = 0.05, 
-                placeV = 95, 
-                nOffset = 5)
-  addPlotScale(raster(ee$racmo), 
-               barLength = 0.00023, 
-               label = 27, 
-               placeH = 79, 
-               placeV = 1,
-               labelOffset = 5)
-  
+  if (ii != "w10m") {
+    addNorthArrow(raster(ee$racmo), 
+                  lwd = 1.1, 
+                  endLength = 0.05, 
+                  placeV = 95, 
+                  nOffset = 5)
+    addPlotScale(raster(ee$racmo), 
+                 barLength = 0.00023, 
+                 label = 27, 
+                 placeH = 79, 
+                 placeV = 1,
+                 labelOffset = 5)
+  } else {
+    # Add the wind vectors
+    addWindVectors(vectorMag = ee$racmo, 
+              vectorAngle = ee$racmoData, 
+              uData = ee$racmoU, 
+              vData = ee$racmoV) 
+  }
   
   # Annotate with letter for naming subplots
+  ee$pp <- 0.01 # offset
   annotateShelfPlot(raster(ee$racmo),
-                    "topleft", nudgeH = -0.2, nudgeV = -0.02, 
+                    "topleft", nudgeH = 0.015 + ee$pp, nudgeV = 0.02 - ee$pp, 
                     main = paste0("(", letters[which(u_variable == ii)], ")"),
-                    cex  = 2)
+                    cex  = 2, col = "black")
+  annotateShelfPlot(raster(ee$racmo),
+                    "topleft", nudgeH = 0.015, nudgeV = 0.02, 
+                    main = paste0("(", letters[which(u_variable == ii)], ")"),
+                    cex  = 2, col = "white")
   
   # More significant figures needed on the temperatures scale
-  if (u_variable == "t2m") {
+  if (ii == "t2m") {
     ee$tickSignif  = 4
   } else {
     ee$tickSignif  = 3
@@ -231,7 +274,7 @@ for (ii in u_variable) {
   # Add a colour bar!
   addColourBar(col         = ee$kulaS, 
                zlim        = ee$zLim, 
-               mar         = c(3.2, 5.5, 2, 5.5), # Change for plot window size
+               mar         = ee$colourBarMar, 
                allLabels   = "minMax",
                aboveBelow  = ee$zLabels,
                extraCol    = ee$kulaE, 
