@@ -14,6 +14,7 @@
 #             will plot the melt metrics first and then fail
 #
 # Updates:
+# 2022/08/30  v1.1  Fig. 6a & 6d use dates on their scale bars 
 # 2022/05/19  v1.0  Created a tidier version of the script to share
 #
 
@@ -44,12 +45,16 @@ ee$pixelData   <- list(dd$pixelData$Onset[[ee$sensorIndex]],
 
 # Chunk 2: Define Plot Settings ================================================
 # What units are being displayed by the colours? Add title to colour bar
-ee$barNames <- c("Onset (days since 1st Nov)", 
-                 "Freeze-Up (days since 1st Nov)", 
+ee$barNames <- c("Melt Season Onset Date",
+                 "Melt Season Freeze-Up Date",
                  "Season Length (days)", 
                  "Season Duration (days)", 
                  "Season Fraction", 
                  expression(paste("Summer Flux (kg  ", m^-2 , ")")))
+
+ee$barDates <- list(c("2006-11-01", "%d-%b"), 
+                    c("2006-11-01", "%d-%b"), 
+                    NA, NA, NA, NA)
 
 # What are the min and max values to plot? Need to define so each plot matches
 ee$barZlims <- list(c(25, 55), c(75, 105),  c(28, 76), 
@@ -109,7 +114,7 @@ for (ii in 1:5) {
   # Get data for metric ii (last col holds the mean values)
   ee$meanData <- ee$pixelData[[ii]][, dim(ee$pixelData[[ii]])[2]] 
   
-  # Uncommenting here plots another statistic: beware of colour bars & z-limits!
+  # Uncomment here to plot a different statistic: beware colour bars & z-limits!
   # ee$meanData <- ee$pixelData[[ii]][, -1] %>% apply(1, na.rm= TRUE, sd)
   
   # Plot grey area for non-shelf area (and reset plotRaster for each summer)
@@ -159,8 +164,8 @@ for (ii in 1:5) {
                cex.labels  = 1.2,
                title       = ee$barNames[ii],
                cex.title   = 1.4,
+               dateLabels  = ee$barDates[[ii]],
                labelOffset = -3.5)
-  
   # Reset margins for next map
   par(mar = ee$resetMar)
 }
