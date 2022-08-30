@@ -60,7 +60,11 @@ addColourBar <- function(col,
                          aboveBelow = "neither",
                          horiz = FALSE,
                          extraCol = FALSE,
+                         hatchDensity = NA,
+                         hatchAngle = NA,
+                         hatchColour = NA,
                          type = "S",
+                         dateLabels = NA,
                          tickSignif = 3,
                          labelOffset = 1.5){
   #' Add a colour bar to the plotting area
@@ -83,7 +87,14 @@ addColourBar <- function(col,
   #' "both", surprisingly, adds both! Default is neither
   #' @param extraCol "string": What colour/s should be used to show areas beyond
   #' the z-limits; necessary if aboveBelow is being used. See example!
+  #' @param hatchDensity vector: What density should the hatch lines be?
+  #' @param hatchColour vector: What colours should the hatch lines be?
+  #' @param hatchAngle vector: What angle should the hatch lines be at?
   #' @param type "string": Is it a Sequential ("S") or Qualitative ("Q") bar?
+  #' @param dateLabels vector: Vector with 2 variables; variable 1 is the origin 
+  #' date; variable 2 is the format for the date label
+  #' @param tickSignif numeric: How many significant places for the labels?  
+  #' 
   #' @usage ## Basic use
   #'        addColourBar(gg$gg$kulaS, 
   #'                     u_zlim, 
@@ -160,6 +171,27 @@ addColourBar <- function(col,
         col  = col,
         axes = FALSE)
   
+  # Add any required hatching
+  # if (!is.na(hatching)) {
+  if (!is.na(hatchColour) && !is.na(hatchDensity) && !is.na(hatchAngle)) {
+    # Where are the top & bottom of each key colour?
+    dividesAt <- seq(yMin, yMax, length.out = numOfCols + 1)
+    
+    # Loop through them
+    for (ii in 1:numOfCols) {
+      polygon(x = c(0, 2, 2, 0, 0) - 1,
+              y = c(dividesAt[ii], 
+                    dividesAt[ii],
+                    dividesAt[ii + 1],
+                    dividesAt[ii + 1],
+                    dividesAt[ii]), 
+              col     = hatchColour[ii],
+              density = hatchDensity[ii],
+              angle   = hatchAngle[ii], 
+              border = NA)
+    }
+  }
+  
   ## Labelling ----------------------------------------------------------------!
   # Where should the labels be placed? 
   labelsAt <- seq(yMin, yMax, length.out = numOfCols + 1)
@@ -232,6 +264,12 @@ addColourBar <- function(col,
   # Round if crazy values
   labels <- signif(labels, tickSignif)
   
+  # Should the labels be dates?
+  if (!is.na(dateLabels[1])) {
+    labels <- as.Date(labels, origin = dateLabels[1]) %>% 
+      format(format = dateLabels[2])
+  }
+  
   ### Add proper >= or <= signs if using aboveBelow ---------------------------!
   # A length variable eases things ahead!
   xL <- length(labels) 
@@ -256,28 +294,39 @@ addColourBar <- function(col,
   
   ### Display labels & titles - prettify! -------------------------------------!
   # Add our new numeric labels to the bar
-  if (!isTRUE(horiz)) {
-    axis(side   = 4, 
-         at     = forLine,
-         labels = FALSE,
-         lwd.ticks   = FALSE, 
-         las    = 2)
-    axis(side   = 4, 
-         at     = labelsAt,
-         labels = labels,
-         cex.axis = cex.labels,
-         las    = 2)
+  if (is.na(dateLabels[1])) {
+    if (!isTRUE(horiz)) {
+      axis(side   = 4, 
+           at     = forLine,
+           labels = FALSE,
+           lwd.ticks   = FALSE, 
+           las    = 2)
+      axis(side   = 4, 
+           at     = labelsAt,
+           labels = labels,
+           cex.axis = cex.labels,
+           las    = 2)
+    } else {
+      axis(side   = 1, 
+           at     = forLine,
+           lwd.ticks = FALSE, 
+           labels = FALSE,
+           las    = 2)
+      axis(side   = 1,
+           at     = labelsAt,
+           labels = labels,
+           cex.axis = cex.labels,
+           las    = 1)
+    } 
   } else {
-    axis(side   = 1, 
-         at     = forLine,
-         lwd.ticks = FALSE, 
-         labels = FALSE,
-         las    = 2)
-    axis(side   = 1,
-         at     = labelsAt,
-         labels = labels,
-         cex.axis = cex.labels,
-         las    = 1)
+    # Rotate any date labels to make them more legible; requires text, not axis
+    par(xpd = TRUE)                               # plot below y-axis of bar
+    axis(side = 1, at = labelsAt, labels = FALSE) # for the tick marks
+    text(x = labelsAt,                            # for the date text
+         y = rep(-3, length(labelsAt)), 
+         labels = labels, 
+         srt = 30)
+    par(xpd = FALSE)
   }
   
   # Add title
@@ -433,13 +482,15 @@ addPlotScale <- function(raster, barLength, labelOffset = 6,
 }
 
 ##
-annotateShelfPlot <- function(raster, pos, main, 
+annotateShelfPlot <- function(raster, pos, main,
+                              col = "black",
                               cex = 1, nudgeH = 0, nudgeV = 0){
   #' Add annotations to the plot of the shelf; should work with any raster
   #' 
   #' @param raster raster: The raster being plotted
   #' @param pos "string": Should the annotation be topleft or bottomright?
   #' @param main "string": What is the text to be annotated in?
+  #' @param col "string": What colour should the annotation be?
   #' @param cex numeric: How large is the annotation font? Default is 1
   #' @param nudgeV numeric: Adjust the vertical position of the text  
   #' @param nudgeH numeric: Adjust the horizontal position of the text  
@@ -462,7 +513,7 @@ annotateShelfPlot <- function(raster, pos, main,
   }
   
   # Add text annotation
-  text(x = xx, y = yy, main, cex = cex)
+  text(x = xx, y = yy, main, cex = cex, col = col)
 }
 
 ##
@@ -689,7 +740,6 @@ getTrueNorth <- function(x, y, crs, delta_crs = 0.1, delta_lat = 0.1) {
   
   pt_latlon <- sf::st_transform(pt_crs, crs = 4326)
   pt_latlon_coords <- as.data.frame(sf::st_coordinates(pt_latlon))
-  
   
   # point directly grid north of x, y
   pt_grid_north <- sf::st_sfc(sf::st_point(c(x, y + delta_crs)), crs = crs)
