@@ -18,16 +18,19 @@
 #                 - Can choose which months are included as "summer"
 #               - Creates plots as it goes to check
 #           - Fluxes are divided by 10^6 to store in millions 
-#           - As cumulative totals are created, the temperature and albedo need 
-#             to be averaged when used elsewhere to have a physical meaning 
+#           - As cumulative totals are created, the temperature, wind & albedo 
+#             need to be averaged when used elsewhere to have a physical meaning 
 #             (i.e. albedo = 1.7 means nothing)
 #           - Data is stored as a geotiff in "Data/version/racmo/"
 #           - The CRS is hardcoded in because terra does not read it correctly 
 #             from the netCDF
-#           - RACMO2.3p3 data is publicly available online from: 
+#           - Except for the u10m and v10m datasets, which were provided on 
+#             request by Christiaan van Dalum, all of the RACMO2.3p3 data needed 
+#             here is publicly available online from:
 #                     https://zenodo.org/record/5512077#.Ylz4t-hBxhF
 #
 # Updates:
+# 2022/08/30  v1.1  Can extract the wind data (u10 & v10 extracted separately)
 # 2022/05/19  v1.0  Created a tidier version of the script to share
 #
 
@@ -41,7 +44,7 @@ u_shelf   <- "Shackleton"
 u_version <- "v01"
 
 # Which sensor should the data be plotted for?
-# Options: snowmelt, smb, precip, subl, t2m, albedo, swsd, lwsd, senf, latf
+# Options: snowmelt, smb, precip, subl, t2m, albedo, swsd, lwsd, senf, latf, v10m, u10m
 u_variable <- "t2m"
 
 # Which month should be included in the averages?
@@ -59,7 +62,7 @@ u_meanRaster   <- TRUE                     # an09 & an10 TRUE; an11 FALSE
 source("R/setUp/su01_set_up.R") # Global variables, filepaths, functions
 
 # Read in the correct netCDF file
-if (u_variable == "t2m") {
+if (u_variable %in% c("t2m", "v10m", "u10m")) {
   ff$ncRacmo <- paste0(ff$rawRacmo, "/", u_variable, 
                     "_monthlyA_ANT27_CONsettings_197901_201812.nc") # use if T2m
 } else if (u_variable != "albedo") {
@@ -82,7 +85,9 @@ kulaS <- switch(u_variable,
                 lwsd     = colour("lajolla")(16)[-c(1:3, 14:16)],
                 senf     = colour("BuRd")(18)[-c(1, 8, 9, 10, 11, 18)],
                 senf     = colour("BuRd")(24)[-c(1, 8, 9, 10, 11, 18)],
-                latf     = colour("BuRd")(24)[c(1:11)])
+                latf     = colour("BuRd")(24)[c(1:11)],
+                v10m     = colour("BuRd")(24)[c(1:11)],
+                u10m     = colour("BuRd")(24)[c(1:11)])
 
 # _____CODE_____ ###############################################################
 # Chunk 1: Prep for Data Extraction ============================================
@@ -157,6 +162,7 @@ for (ii in u_summerMonths) {
   print(ee$racmoTime[ee$incMonths])
   
   # Get the required month across all the necessary summers
+  # + 1 to the index as the 1st row is not data
   ee$monthValue <- terra::subset(ee$racmo, ee$incMonths + 1)
   
   # Keep only the mean, or all of the extracted months?
