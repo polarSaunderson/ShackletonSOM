@@ -5,16 +5,17 @@
 # SCRIPT OVERVIEW ##############################################################
 # Author:     Dominic Saunderson      [ dominicSaunderson@gmail.com ]
 #
-# Purpose:    Plot timeseries of annual SOM pattern occurrence (Fig. 5)
+# Purpose:    Plot relative occurrence of the SOM patterns each summer (Fig. 5)
 #
-# Comments: - Also creates barplots of relative pattern occurrence each summer
-#             (Fig. S9)
-#           - And calculates correlations with the CMS
-#           - This is predominantly set-up for 9 patterns in a 3 x 3 grid, so 
-#             plotting with other configurations could good awry!
+# Comments: - Also creates timeseries of annual SOM pattern occurrence (Fig. S8)
+#           - Additionally, calculates interannual correlations with the CMS
+#           - Fig. S8 code is predominantly set-up for a 3 x 3 grid, so plotting
+#             with other configurations could good awry!
 #           ! Make sure you have run script an01 already
 #
 # Updates:
+# 2022/08/30  v1.1  Added code for hatching; amended comments re: Fig. 5 & S8;
+#                   corrected table of occurrence stats to ignore NA
 # 2022/05/19  v1.0  Created a tidier version of the script to share
 #
 
@@ -230,8 +231,8 @@ layout(matrix(c(0, 1, 1, 1,
 par(mar = c(6, 1.5, 6, 0))
 
 # We need specific colours here (they match those in Fig. 3)
-gg$kulaQ2 <- colour("light")(9)
-gg$kulaQ2 <- gg$kulaQ2[c(5, 8, 3, 6, 9, 7, 1, 4, 2)] # rearrange order
+gg$kulaT <- colour("light")(9)
+gg$kulaT <- gg$kulaT[c(5, 8, 3, 6, 9, 7, 1, 4, 2)] # rearrange order
 
 ee$incYears <- which(colnames(ee$propSom) %in% paste0("ms", c(24:42)))
 
@@ -242,11 +243,36 @@ ee$plotData <- cbind(ee$propSom[, ee$incYears],
 
 # Create the plot
 ee$xAxisPlot <- barplot(ee$plotData,
-                        col  = gg$kulaQ2,
+                        col  = gg$kulaT,
                         ylim = c(0, 100),
                         ylab = "",
                         axisnames = FALSE,
                         axes = FALSE)
+
+# Add hatching
+gg$hatchDensity <- c(0, 0, 10, 0, 0,  20, 10, 0, 0)
+gg$hatchAngles  <- c(0, 0, 45, 0, 0, -45, 45, 0, 0)
+gg$kulaH        <- rep("#767676", 9)
+gg$kulaH[7]     <- "#ffffff"
+
+barplot(ee$plotData,
+        add       = TRUE,
+        col       = gg$kulaH,
+        angle     = gg$hatchAngles,
+        density   = gg$hatchDensity,
+        ylim      = c(0, 100),
+        ylab      = "",
+        axisnames = FALSE,
+        axes      = FALSE)
+
+# Hide extra column bottoms - very hacky!
+# Using density in above barplotting, shows the x-axis marks for the extra cols
+# we used in ee$somXdata to give space for the colour scalebar.
+par(xpd = TRUE)
+polygon(x = c(0, 3, 3, 0, 0) + 23,
+        y = c(0, 0, 2, 2, 0) - 1, 
+        col = "white", border = NA)
+par(xpd = FALSE)
 
 ## Labels ----------------------------------------------------------------------
 # Add y-axis label text
@@ -297,65 +323,74 @@ text(x = max(ee$xAxisPlot) + 3.55,
 par(xpd = FALSE)
 
 # Add a colour scale bar
-addColourBar(gg$kulaQ2[c(1:(u_somRow * u_somCol))],
+addColourBar(gg$kulaT[c(1:(u_somRow * u_somCol))],
              zlim = c(1, u_somRow * u_somCol),
              type = "Q",
+             hatchColour = gg$kulaH,
+             hatchDensity = gg$hatchDensity,
+             hatchAngle = gg$hatchAngles,
              allLabels = "yes",
              mar = c(8, 3, 8, 0), 
              cex.labels = 2.25)
 
 # Chunk 5: Calculate basic stats ===============================================
 # Preallocate to store
-ee$pStats <- matrix(NA, ncol = 12, 
+ee$absStats <- matrix(NA, ncol = 6, 
                     nrow = u_somRow * u_somCol) %>% 
   `colnames<-`(c("1_mean_abs", "2_med_abs", "3_mad_abs",
-                 "4_sd_abs", "5_cv_abs", "6_vari_abs", 
-                 "7_mean_rel",  "8_med_rel", "9_mad_rel", 
-                 "10_sd_rel", "11_cv_rel", "12_vari_rel"))
+                 "4_sd_abs", "5_cv_abs", "6_vari_abs"))
+
+ee$relStats <- ee$absStats %>% 
+  `colnames<-`(c("1_mean_rel",  "2_med_rel", "3_mad_rel", 
+                 "4_sd_rel", "5_cv_rel", "6_vari_rel"))
+
+# Only AMSR years with data
+ee$incYears <- ee$incYears[-(which(ee$incYears == 33))]
 
 # Select only the years with melt data for ease
 ee$pAbs <- ee$annualSom[, ee$incYears]
 ee$pRel <- ee$propSom[, ee$incYears]
 
-# Mean values
+# Mean occurrence
 for (ii in 1:(u_somRow * u_somCol)) {
-  ee$pStats[ii, 1]  <- mean(ee$pAbs[ii, ])
-  ee$pStats[ii, 7]  <- mean(ee$pRel[ii, ])
+  ee$absStats[ii, 1]  <- mean(ee$pAbs[ii, ])
+  ee$relStats[ii, 1]  <- mean(ee$pRel[ii, ])
 }
 
-# Median values
+# Median occurrence
 for (ii in 1:(u_somRow * u_somCol)) {
-  ee$pStats[ii, 2]  <- median(ee$pAbs[ii, ])
-  ee$pStats[ii, 8]  <- median(ee$pRel[ii, ])
+  ee$absStats[ii, 2]  <- median(ee$pAbs[ii, ])
+  ee$relStats[ii, 2]  <- median(ee$pRel[ii, ])
 }
 
-# MAD values
+# MAD occurrence
 for (ii in 1:(u_somRow * u_somCol)) {
-  ee$pStats[ii, 3]  <- mad(ee$pAbs[ii, ], constant = 1)
-  ee$pStats[ii, 9]  <- mad(ee$pRel[ii, ], constant = 1)
+  ee$absStats[ii, 3]  <- mad(ee$pAbs[ii, ], constant = 1)
+  ee$relStats[ii, 3]  <- mad(ee$pRel[ii, ], constant = 1)
 }
 
-# SD values
+# SD occurrence
 for (ii in 1:(u_somRow * u_somCol)) {
-  ee$pStats[ii, 4]  <- sd(ee$pAbs[ii, ])
-  ee$pStats[ii, 10] <- sd(ee$pRel[ii, ])
+  ee$absStats[ii, 4] <- sd(ee$pAbs[ii, ])
+  ee$relStats[ii, 4] <- sd(ee$pRel[ii, ])
 }
 
-# CV values
+# CV occurrence
 for (ii in 1:(u_somRow * u_somCol)) {
-  ee$pStats[ii, 5]  <- ee$pStats[ii, 3] / ee$pStats[ii, 2]
-  ee$pStats[ii, 11] <- ee$pStats[ii, 9] / ee$pStats[ii, 8]
+  ee$absStats[ii, 5] <- ee$absStats[ii, 3] / ee$absStats[ii, 2]
+  ee$relStats[ii, 5] <- ee$relStats[ii, 3] / ee$relStats[ii, 2]
 }
 
-# vari values
+# vari occurrence
 for (ii in 1:(u_somRow * u_somCol)) {
-  ee$pStats[ii, 6]  <- ee$pStats[ii, 4] / ee$pStats[ii, 1]
-  ee$pStats[ii, 12] <- ee$pStats[ii, 10] / ee$pStats[ii, 7]
+  ee$absStats[ii, 6] <- ee$absStats[ii, 4] / ee$absStats[ii, 1]
+  ee$relStats[ii, 6] <- ee$relStats[ii, 4] / ee$relStats[ii, 1]
 }
 
 # Print table
 printLine()
-print(ee$pStats %>% round(3))
+print(ee$absStats %>% round(2))
+print(ee$relStats %>% round(2))
 
 # Finished
 rm(ii, jj)
