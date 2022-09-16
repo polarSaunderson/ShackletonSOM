@@ -14,6 +14,7 @@
 #             - The manuscript uses DJ as the summer definition for correlations
 #
 # Updates:
+# 2022/09/16  v1.2  Table S1 prints to console
 # 2022/08/30  v1.1  Table now includes SD as a column
 # 2022/05/19  v1.0  Created a tidier version of the script to share
 #
@@ -38,9 +39,11 @@ library(Kendall)
 ee$summerIndex <- as.integer(rownames(dd$CMS)) - 1979
 ee$era5_2      <- read.csv("../../Data/ERA5/ee-chart__8.csv")
 ee$tableData   <- matrix(NA, nrow = 9, ncol = 10) %>% 
-  `colnames<-`(c("Freq", "Ext. Mean", "Ext. SD", 
-                 "Tani. Mean", "Median", "MAD", "CV", "Trend",
-                 "CMS", "T2m"))
+  `colnames<-`(c("Freq.",                        # overall pattern occurrence
+                 "Mean", "SD",                   # extent on pattern days
+                 "Tanimoto",                     # mean fit of pattern to obs.
+                 "Median", "MAD", "CV", "Trend", # annual occurrence
+                 "CMS", "T2m"))                  # correlations
 
 # Chunk 1: Calculate Annual Occurrence =========================================
 # Set Up
@@ -150,7 +153,8 @@ for (ii in 1:9) {
 
 ## Inter Pattern Correlations (not in table) -----------------------------------
 printLine()
-cat("Interpattern Correlations (p < 0.1) \n\n")
+cat("Inter-Pattern Correlations\n")
+cat("\nSignificant at p < 0.1 \n")
 
 # Preallocate
 ee$interee$kaw    <- matrix(NA, nrow = 9, ncol = 9)
@@ -180,6 +184,10 @@ for (ii in 1:9) {
   }
 }
 
+# Display full table
+cat("\n All Values (Table S1\n")
+print(ee$interee$kaw)
+
 ## RACMO temperature correlations ----------------------------------------------
 printLine()
 cat("RACMO2.3p3 DJ Correlations \n\n")
@@ -207,7 +215,7 @@ for (ii in 1:9) {
   
   # Print to console
   cat("Pattern", ii, ":", 
-      sprintf("%+.3f", ee$kawEst), 
+      sprintf("%+.2f", ee$kawEst), 
       "@ p = ", ee$kawP,  "\n")
 }
 
@@ -219,7 +227,7 @@ ee$kawP   <- ee$kaw$p.value %>% round(2)
 
 # Print to console
 cat("CMS       :", 
-    sprintf("%+.3f", ee$kawEst), 
+    sprintf("%+.2f", ee$kawEst), 
     "@ p = ", ee$kawP,  "\n")
 
 ## Calculate extremes (in terms of normal variability) -------------------------
@@ -248,7 +256,7 @@ print(ee$pp %>% round(2)) # round for ease of reading, not 1.0000000000!
 
 # Output table data at the end! ------------------------------------------------
 printLine()
-cat(" Table Data \n\n")
+cat(" Table Data (Table 1 in the manuscript; see code line 42) \n\n")
 print(ee$tableData)
 
 # Finished
