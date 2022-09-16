@@ -9,16 +9,19 @@
 #
 # Comments: - You need to download the datasets yourself, and then set the file 
 #             paths to them here
-#           - The melt data will be made available upon acceptance of the final
-#             manuscript
-#           - RACMO2.3p3 data is publicly available online from: 
-#                     https://zenodo.org/record/5512077#.Ylz4t-hBxhF
-#           - MEaSURES data is publicly available online from:
-#                     https://nsidc.org/data/nsidc-0709 
 #
 # Updates:
 # 2022/05/19  v1.0  Created a tidier version of the script to share
 #
+
+# ##########  DATA AVAILABILITY  ###############################################
+#
+#           - AMSR & SSMIS binary melt data is publicly available online from:
+#                     https://doi.org/10.18709/perscido.2022.09.ds376
+#           - RACMO2.3p3 data is publicly available online from: 
+#                     https://zenodo.org/record/5512077#.Ylz4t-hBxhF
+#           - MEaSURES data is publicly available online from:
+#                     https://nsidc.org/data/nsidc-0709 
 
 # SET FILE PATHS ###############################################################
 # Create an environment just for file / folder paths
