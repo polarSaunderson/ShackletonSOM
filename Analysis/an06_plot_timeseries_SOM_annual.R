@@ -14,8 +14,8 @@
 #           ! Make sure you have run script an01 already
 #
 # Updates:
-# 2022/08/30  v1.1  Added code for hatching; amended comments re: Fig. 5 & S8;
-#                   corrected table of occurrence stats to ignore NA
+# 2022/09/16  v1.2  Separated basic stats table into absolute & relative tables
+# 2022/08/30  v1.1  Added code for hatching; amended comments re: Fig. 5 & S8
 # 2022/05/19  v1.0  Created a tidier version of the script to share
 #
 
@@ -207,12 +207,12 @@ cat(" Correlation with the CMS \n\n")
 for (ii in 1:(u_somRow * u_somCol)) {
   # Correlate
   ee$kaw    <- cor.test(ee$cms, ee$annualSom[ii, ])
-  ee$kawEst <- ee$kaw$estimate %>% round(3)
-  ee$kawP   <- ee$kaw$p.value %>% round(3)
+  ee$kawEst <- ee$kaw$estimate %>% round(2)
+  ee$kawP   <- ee$kaw$p.value %>% round(2)
   
   # Print to console
   cat("Pattern", ii, ":", 
-      sprintf("%+.3f", ee$kawEst), 
+      sprintf("%+.2f", ee$kawEst), 
       "@ p = ", ee$kawP,  "\n")
 }
 
@@ -335,62 +335,62 @@ addColourBar(gg$kulaT[c(1:(u_somRow * u_somCol))],
 
 # Chunk 5: Calculate basic stats ===============================================
 # Preallocate to store
-ee$absStats <- matrix(NA, ncol = 6, 
-                    nrow = u_somRow * u_somCol) %>% 
-  `colnames<-`(c("1_mean_abs", "2_med_abs", "3_mad_abs",
-                 "4_sd_abs", "5_cv_abs", "6_vari_abs"))
+ee$stats_abs <- matrix(NA, ncol = 6, 
+                        nrow = u_somRow * u_somCol) %>% 
+  `colnames<-`(c("Mean", "Median", "MAD",
+                 "SD", "CV", "Variability"))
 
-ee$relStats <- ee$absStats %>% 
-  `colnames<-`(c("1_mean_rel",  "2_med_rel", "3_mad_rel", 
-                 "4_sd_rel", "5_cv_rel", "6_vari_rel"))
-
-# Only AMSR years with data
-ee$incYears <- ee$incYears[-(which(ee$incYears == 33))]
+ee$stats_rel <- ee$stats_abs
 
 # Select only the years with melt data for ease
+ee$incYears <- ee$incYears[-(which(ee$incYears == 33))]
 ee$pAbs <- ee$annualSom[, ee$incYears]
 ee$pRel <- ee$propSom[, ee$incYears]
 
-# Mean occurrence
+# Mean Occurrence
 for (ii in 1:(u_somRow * u_somCol)) {
-  ee$absStats[ii, 1]  <- mean(ee$pAbs[ii, ])
-  ee$relStats[ii, 1]  <- mean(ee$pRel[ii, ])
+  ee$stats_abs[ii, 1]  <- mean(ee$pAbs[ii, ], na.rm = TRUE)
+  ee$stats_rel[ii, 1]  <- mean(ee$pRel[ii, ], na.rm = TRUE)
 }
 
-# Median occurrence
+# Median Occurrence
 for (ii in 1:(u_somRow * u_somCol)) {
-  ee$absStats[ii, 2]  <- median(ee$pAbs[ii, ])
-  ee$relStats[ii, 2]  <- median(ee$pRel[ii, ])
+  ee$stats_abs[ii, 2]  <- median(ee$pAbs[ii, ], na.rm = TRUE)
+  ee$stats_rel[ii, 2]  <- median(ee$pRel[ii, ], na.rm = TRUE)
 }
 
-# MAD occurrence
+# MAD of Occurrence
 for (ii in 1:(u_somRow * u_somCol)) {
-  ee$absStats[ii, 3]  <- mad(ee$pAbs[ii, ], constant = 1)
-  ee$relStats[ii, 3]  <- mad(ee$pRel[ii, ], constant = 1)
+  ee$stats_abs[ii, 3]  <- mad(ee$pAbs[ii, ], constant = 1, na.rm = TRUE)
+  ee$stats_rel[ii, 3]  <- mad(ee$pRel[ii, ], constant = 1, na.rm = TRUE)
 }
 
-# SD occurrence
+# SD of Occurrence
 for (ii in 1:(u_somRow * u_somCol)) {
-  ee$absStats[ii, 4] <- sd(ee$pAbs[ii, ])
-  ee$relStats[ii, 4] <- sd(ee$pRel[ii, ])
+  ee$stats_abs[ii, 4]  <- sd(ee$pAbs[ii, ], na.rm = TRUE)
+  ee$stats_rel[ii, 4]  <- sd(ee$pRel[ii, ], na.rm = TRUE)
 }
 
-# CV occurrence
+# CV values (MAD / median)
 for (ii in 1:(u_somRow * u_somCol)) {
-  ee$absStats[ii, 5] <- ee$absStats[ii, 3] / ee$absStats[ii, 2]
-  ee$relStats[ii, 5] <- ee$relStats[ii, 3] / ee$relStats[ii, 2]
+  ee$stats_abs[ii, 5]  <- ee$stats_abs[ii, 3] / ee$stats_abs[ii, 2]
+  ee$stats_rel[ii, 5]  <- ee$stats_rel[ii, 3] / ee$stats_rel[ii, 2]
 }
 
-# vari occurrence
+# Variability values (SD / mean)
 for (ii in 1:(u_somRow * u_somCol)) {
-  ee$absStats[ii, 6] <- ee$absStats[ii, 4] / ee$absStats[ii, 1]
-  ee$relStats[ii, 6] <- ee$relStats[ii, 4] / ee$relStats[ii, 1]
+  ee$stats_abs[ii, 6]  <- ee$stats_abs[ii, 4] / ee$stats_abs[ii, 1]
+  ee$stats_rel[ii, 6]  <- ee$stats_rel[ii, 4] / ee$stats_rel[ii, 1]
 }
 
-# Print table
+# Print tables
 printLine()
-print(ee$absStats %>% round(2))
-print(ee$relStats %>% round(2))
+cat("Statistics for Absolute Annual Pattern Counts\n\n")
+print(ee$stats_abs %>% round(2))
+
+printLine()
+cat("Statistics for Relative Annual Pattern Counts\n\n")
+print(ee$stats_rel %>% round(2))
 
 # Finished
 rm(ii, jj)
