@@ -11,9 +11,12 @@
 # Comments: - Plots the observations and assigned patterns from each sensor 
 #             side-by-side to allow visual comparison
 #           ! Make sure that scripts an01 & an07 have already been run
-#           - Errors likely mean that the combination doesn't exist
+#           - Errors likely mean that the combination doesn't exist, but this 
+#             script has not been well-tested for shelves other than Shackleton,
+#             or beyond the figures in the paper.
 #
 # Updates:
+# 2022/09/16  v1.1  Added stop if the pattern combination doesn't exist
 # 2022/05/19  v1.0  Created a tidier version of the script to share
 #
 
@@ -75,21 +78,25 @@ ee$amsrVectors <- dd$vectorGrid_amsrB
 cat("\n SAMPLING DATA \n\n")
 
 # Recreate supplement figure or choose random days to compare
-if (!is.na(u_pattern1) | !is.na(u_pattern2)) {
-  if ( u_pattern1 == -1 ) {
+if (!is.na(u_pattern1) | !is.na(u_pattern2) | u_shelf != "Shackleton") {
+  if ( u_pattern1 == -1 | is.na(u_pattern1)) {
     u_pattern1 <- unique(ee$sClass)
     cat("\n Displaying random AMSR patterns\n")
   }
-  if ( u_pattern2 == -1 ) {
+  if ( u_pattern2 == -1 | is.na(u_pattern2)) {
     u_pattern2 <- unique(ee$sClass)
     cat("\n Displaying random SSMIS patterns\n")
   } 
   
   # Choose a sample!    
   ee$patternSample <- (ee$patterns[, 1][ee$patterns[, 2] %in% u_pattern1 & 
-                                          ee$patterns[, 3] %in% u_pattern2]) %>% 
-    sample(u_sample) %>%
-    sort() # in chronological order
+                                          ee$patterns[, 3] %in% u_pattern2])
+  if (length(ee$patternSample) == 0) {
+    stop("There are no days matching this pattern combination!")
+  } else {
+    ee$patternSample <- sample(u_sample) %>%
+      sort() # in chronological order
+  }
   
 } else {
   # These are the dates used in the Supplement Figures (Fig. S7 & S8)
@@ -110,20 +117,11 @@ if (!is.na(u_pattern1) | !is.na(u_pattern2)) {
           noRStudioGD = TRUE)
 }
 
-# # These are alternative dates that are interesting
-# ee$patternSample <- c(as.Date("2006-01-14") - as.Date("1970-01-01"), 
-#                    as.Date("2011-01-06") - as.Date("1970-01-01"),
-#                    as.Date("2018-12-01") - as.Date("1970-01-01"), 
-#                    as.Date("2015-12-28") - as.Date("1970-01-01"), 
-#                    as.Date("2006-01-20") - as.Date("1970-01-01"), 
-#                    as.Date("2004-01-23") - as.Date("1970-01-01"), 
-#                    as.Date("2012-12-16") - as.Date("1970-01-01"))
-
 ## Plotting --------------------------------------------------------------------
 # Set up plotting area
 par(bg = "#F5F5F5",
     mfrow = c(3, 4),
-    mar = c(1,1,2,1))
+    mar = c(1, 1, 2, 1))
 
 # For each sampled day...
 for (ii in ee$patternSample) {
@@ -151,7 +149,7 @@ for (ii in ee$patternSample) {
   # Which SOM pattern was assigned to the AMSR data on this day?
   ee$amsrSOM     <- ee$sData$codes[[1]][ee$sampleData[2], ]
   ee$amsrSOMPlot <- pixelValues2Raster(ee$amsrSOM, dd$commonMask)
-  # here()
+  
   
   # Add a title to the top 
   if (which(ee$patternSample == ii) %in% c(1, 7)) {
