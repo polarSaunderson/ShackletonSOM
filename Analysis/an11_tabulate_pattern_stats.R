@@ -14,8 +14,8 @@
 #             - The manuscript uses DJ as the summer definition for correlations
 #
 # Updates:
-# 2022/09/16  v1.2  Table S1 prints to console
-# 2022/08/30  v1.1  Table now includes SD as a column
+# 2022/09/16  v1.1  Table S1 prints to console
+# 2022/08/30        Table now includes SD as a column
 # 2022/05/19  v1.0  Created a tidier version of the script to share
 #
 

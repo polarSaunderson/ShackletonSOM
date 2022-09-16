@@ -14,8 +14,8 @@
 #           ! Make sure you have run script an01 already
 #
 # Updates:
-# 2022/09/16  v1.2  Separated basic stats table into absolute & relative tables
-# 2022/08/30  v1.1  Added code for hatching; amended comments re: Fig. 5 & S8
+# 2022/09/16  v1.1  Separated basic stats table into absolute & relative tables
+# 2022/08/30        Added code for hatching; amended comments re: Fig. 5 & S8
 # 2022/05/19  v1.0  Created a tidier version of the script to share
 #
 
