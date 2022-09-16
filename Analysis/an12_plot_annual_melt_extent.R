@@ -16,7 +16,7 @@
 # 2022/08/30  v1.1  Created a tidier version of the script to share
 #
 # User Options #################################################################
-# fresh("") # reset everything
+fresh("") # reset everything
 
 # Which shelf are you interested in?
 u_shelf   <- "Shackleton"
