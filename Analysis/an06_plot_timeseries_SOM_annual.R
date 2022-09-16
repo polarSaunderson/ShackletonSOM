@@ -104,8 +104,8 @@ if (u_shelf == "Shackleton") {
   ee$titleY[c(1, 9)] <- 65
 } else {
   # Set y-limits and title location for each plot
-  ee$maxYs  <- rep(max(ee$annualSom), u_somCol * u_somRow)
-  ee$titleY <- rep(max(ee$annualSom) * 0.9, 
+  ee$maxYs  <- rep(max(ee$annualSom, na.rm = TRUE), u_somCol * u_somRow)
+  ee$titleY <- rep(max(ee$annualSom, na.rm = TRUE) * 0.9, 
                    u_somCol * u_somRow)
 }
 
