@@ -2,7 +2,7 @@
 ### Investigating the variability of surface melt on Antarctic ice shelves
 The scripts in this repository have been developed to investigate surface melt on the Shackleton Ice Shelf in East Antarctica as part of my PhD with the [Monash Ice Sheet Initiative](https://www.icesheet.org/) at [Monash University](https://www.monash.edu/science/schools/earth-atmosphere-environment/our-people).
 
-This work has been accepted for publication in [The Cryosphere](https://www.the-cryosphere.net/), and is available as an [open access article](https://doi.org/10.5194/tc-2022-94).
+This work has been published in [The Cryosphere](https://www.the-cryosphere.net/), and is available as an [open access article](https://doi.org/10.5194/tc-2022-94).
 
 The scripts in this repository are shared in the interests of transparency and open science, and can be used to recreate the figures found in the journal article and its supplement.
 Future work can also use this code to build on our findings and explore melt on other Antarctic ice shelves (see "Beyond Shackleton" below).
